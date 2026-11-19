@@ -1,3 +1,8 @@
+// Eid Mubarak — interactive site
+// Responses are saved to a private GitHub Gist, with a localStorage
+// fallback in the visitor's browser (key 'eidResponses').
+// Entries are shaped { timestamp, answers }.
+
 // Opening Letter Animation
 function createLetterParticles() {
     const particlesContainer = document.getElementById('letterParticles');
@@ -35,7 +40,8 @@ function initLetterAnimation() {
             letterOverlay.classList.add('hidden');
             document.body.style.overflow = 'auto';
 
-            // Auto-start video after envelope opens
+            // Auto-start video after envelope opens (muted, so mobile
+            // browsers allow autoplay; the user can unmute via controls)
             const video = document.querySelector('video');
             if (video) {
                 video.play().catch(err => console.log('Video autoplay blocked:', err));
@@ -61,23 +67,52 @@ function createStars() {
     }
 }
 
-// Video Mute/Unmute Toggle
+// Background Music Toggle (controls the backgroundMusic audio element).
+// If the audio file is missing (eid-nasheed.mp3 is not in the repo),
+// hide the button so nobody taps a dead control.
 const musicToggle = document.getElementById('musicToggle');
-let isVideoMuted = false;
+const backgroundMusic = document.getElementById('backgroundMusic');
+let isMusicPlaying = false;
 
-musicToggle.addEventListener('click', () => {
-    const video = document.querySelector('video');
-    if (video) {
-        if (isVideoMuted) {
-            video.muted = false;
-            musicToggle.innerHTML = '<span class="music-icon">🔊</span>';
-        } else {
-            video.muted = true;
-            musicToggle.innerHTML = '<span class="music-icon">🔇</span>';
-        }
-        isVideoMuted = !isVideoMuted;
+function hideMusicToggle() {
+    if (musicToggle) {
+        musicToggle.hidden = true;
     }
-});
+}
+
+if (backgroundMusic) {
+    // A missing file fires 'error' on the <source> element (and the
+    // audio element in some browsers), so listen on both.
+    backgroundMusic.addEventListener('error', hideMusicToggle);
+    backgroundMusic.querySelectorAll('source').forEach(source => {
+        source.addEventListener('error', hideMusicToggle);
+    });
+} else {
+    hideMusicToggle();
+}
+
+if (musicToggle && backgroundMusic) {
+    musicToggle.addEventListener('click', () => {
+        if (isMusicPlaying) {
+            backgroundMusic.pause();
+            musicToggle.innerHTML = '<span class="music-icon">🔇</span>';
+            musicToggle.classList.remove('playing');
+            musicToggle.setAttribute('aria-label', 'Play background music');
+        } else {
+            backgroundMusic.play().then(() => {
+                musicToggle.innerHTML = '<span class="music-icon">🔊</span>';
+                musicToggle.classList.add('playing');
+                musicToggle.setAttribute('aria-label', 'Mute background music');
+                isMusicPlaying = true;
+            }).catch(err => {
+                console.log('Music playback blocked or unavailable:', err);
+                hideMusicToggle();
+            });
+            return;
+        }
+        isMusicPlaying = false;
+    });
+}
 
 // CTA Button - Scroll to Media Section
 const ctaButton = document.getElementById('ctaButton');
@@ -86,6 +121,7 @@ ctaButton.addEventListener('click', () => {
 });
 
 // Questions Flow
+const TOTAL_QUESTIONS = 5;
 const nextButton1 = document.getElementById('nextButton1');
 const nextButton2 = document.getElementById('nextButton2');
 const nextButton3 = document.getElementById('nextButton3');
@@ -96,6 +132,9 @@ const joyInput = document.getElementById('joyInput');
 const personInput = document.getElementById('personInput');
 const memoryInput = document.getElementById('memoryInput');
 const eidiInput = document.getElementById('eidiInput');
+const progressLabel = document.getElementById('progressLabel');
+const progressDots = document.getElementById('progressDots');
+const questionsProgress = document.getElementById('questionsProgress');
 
 let currentQuestion = 1;
 let userData = {
@@ -105,6 +144,18 @@ let userData = {
     memory: '',
     eidi: ''
 };
+
+function updateProgress() {
+    if (progressLabel) {
+        progressLabel.textContent = `Step ${currentQuestion} of ${TOTAL_QUESTIONS}`;
+    }
+    if (progressDots) {
+        progressDots.querySelectorAll('.progress-dot').forEach((dot, index) => {
+            dot.classList.toggle('done', index < currentQuestion - 1);
+            dot.classList.toggle('current', index === currentQuestion - 1);
+        });
+    }
+}
 
 nextButton1.addEventListener('click', () => {
     const duaValue = duaInput.value.trim();
@@ -154,14 +205,36 @@ nextButton4.addEventListener('click', () => {
     transitionToQuestion(4, 5);
 });
 
-function transitionToQuestion(current, next) {
+// Back buttons (questions 2-5): slide the other way, answers already
+// entered stay in their inputs.
+document.querySelectorAll('.back-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const target = Number(button.dataset.backTo);
+        if (target >= 1 && target < currentQuestion) {
+            transitionToQuestion(currentQuestion, target, 'back');
+        }
+    });
+});
+
+function transitionToQuestion(current, next, direction = 'forward') {
     const currentCard = document.querySelector(`.question-card[data-question="${current}"]`);
     const nextCard = document.querySelector(`.question-card[data-question="${next}"]`);
 
-    currentCard.classList.add('exit');
+    currentCard.classList.add(direction === 'forward' ? 'exit' : 'exit-right');
+    if (direction === 'back') {
+        nextCard.classList.add('enter-left');
+    }
     setTimeout(() => {
-        currentCard.classList.remove('active', 'exit');
+        currentCard.classList.remove('active', 'exit', 'exit-right');
         nextCard.classList.add('active');
+        if (direction === 'back') {
+            // Two frames later so the slide-in animates instead of snapping.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => nextCard.classList.remove('enter-left'));
+            });
+        }
+        currentQuestion = next;
+        updateProgress();
     }, 500);
 }
 
@@ -175,7 +248,7 @@ submitButton.addEventListener('click', () => {
 
     userData.eidi = eidiValue;
 
-    // Save user data to file
+    // Save user data (Gist, with localStorage fallback)
     saveUserData(userData);
 
     // Show result card
@@ -303,9 +376,14 @@ function showResults() {
     const resultDua = document.getElementById('resultDua');
     const resultHumor = document.getElementById('resultHumor');
 
-    resultMessage.textContent = `Your heartfelt dua has been received with love and prayers.`;
+    resultMessage.textContent = `Eid Mubarak, ${userData.dua}! Your heartfelt dua has been received with love and prayers.`;
     resultDua.textContent = `May Allah fill your life with happiness, accept all your prayers, and bring you closer to the ones you love. May every moment of your life be blessed with peace, prosperity, and endless joy. Ameen.`;
     resultHumor.textContent = `Waise Eidi ka intezar rahe ga 😄`;
+
+    // Hide the step indicator once the flow is complete
+    if (questionsProgress) {
+        questionsProgress.classList.add('hidden');
+    }
 
     // Transition
     currentCard.classList.add('exit');
@@ -414,6 +492,13 @@ lightbox.addEventListener('click', (e) => {
     }
 });
 
+// Close the lightbox with the Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        lightbox.classList.remove('active');
+    }
+});
+
 // Intersection Observer for Scroll Animations
 const observerOptions = {
     threshold: 0.2,
@@ -445,6 +530,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     createStars();
     initMediaGallery();
+    updateProgress();
 });
 
 // Resize canvas on window resize
@@ -465,18 +551,25 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Prevent form submission on Enter key (except in textarea)
+// Enter advances on every single-line text input (textareas keep Enter
+// for new lines). Each input maps to its card's Next button.
+const enterTargets = {
+    duaInput: nextButton1,
+    joyInput: nextButton2,
+    personInput: nextButton3
+};
+
 document.querySelectorAll('.question-input').forEach(input => {
-    if (input.tagName !== 'TEXTAREA') {
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                if (input.id === 'duaInput') {
-                    nextButton1.click();
-                } else if (input.id === 'eidiInput') {
-                    submitButton.click();
-                }
-            }
-        });
+    if (input.tagName === 'TEXTAREA') {
+        return;
     }
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const targetButton = enterTargets[input.id];
+            if (targetButton) {
+                targetButton.click();
+            }
+        }
+    });
 });

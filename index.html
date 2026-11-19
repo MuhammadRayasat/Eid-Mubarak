@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eid Mubarak - Muhammad Rayasat</title>
+    <meta name="description" content="A special Eid Mubarak greeting from Muhammad Rayasat — open the envelope, enjoy the memories, and answer a few questions with love.">
+    <meta name="theme-color" content="#0d4d3d">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Eid Mubarak — Muhammad Rayasat">
+    <meta property="og:description" content="A special Eid greeting: open the envelope, enjoy the memories, and answer a few questions with love.">
+    <meta property="og:image" content="e024d61a70376400f8e3a6aca36f87fb.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Eid Mubarak — Muhammad Rayasat">
+    <meta name="twitter:description" content="A special Eid greeting: open the envelope, enjoy the memories, and answer a few questions with love.">
+    <meta name="twitter:image" content="e024d61a70376400f8e3a6aca36f87fb.jpg">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230d4d3d'/%3E%3Cpath d='M63 15a35 35 0 1 0 0 70 28 28 0 1 1 0-70z' fill='%23ffd700'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,8 +40,8 @@
     </div>
 
     <!-- Music Toggle -->
-    <button class="music-toggle" id="musicToggle">
-        <span class="music-icon">🔊</span>
+    <button type="button" class="music-toggle" id="musicToggle" aria-label="Play background music">
+        <span class="music-icon">🔇</span>
     </button>
 
     <!-- Hero Section -->
@@ -40,7 +51,7 @@
             <div class="moon-icon">🌙</div>
             <h1 class="hero-title">Eid Mubarak</h1>
             <p class="hero-subtitle">From Muhammad Rayasat</p>
-            <button class="cta-button" id="ctaButton">Start Your Eid Experience</button>
+            <button type="button" class="cta-button" id="ctaButton">Start Your Eid Experience</button>
         </div>
     </section>
 
@@ -50,10 +61,10 @@
             <h2 class="section-title">Eid Memories</h2>
             <div class="media-grid">
                 <div class="media-item" data-type="image" data-src="e024d61a70376400f8e3a6aca36f87fb.jpg">
-                    <img src="e024d61a70376400f8e3a6aca36f87fb.jpg" alt="Eid Mubarak Greeting">
+                    <img src="e024d61a70376400f8e3a6aca36f87fb.jpg" alt="Eid Mubarak Greeting" width="1080" height="1080" loading="lazy" decoding="async">
                 </div>
                 <div class="media-item" data-type="video">
-                    <video controls autoplay loop>
+                    <video controls autoplay muted loop playsinline>
                         <source src="Mention them  -- Advance Eid Mubarak  -- Happy Eid  -- Eid Mubarak in Advance  -- Mention your favorite person   حوا.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
@@ -65,36 +76,60 @@
     <!-- Interactive Questions Section -->
     <section class="questions-section" id="questionsSection">
         <div class="container">
-            <h2 class="section-title">Kindly Answer the Question....Please!</h2>
+            <h2 class="section-title">A Few Questions, With Love</h2>
+            <div class="questions-progress" id="questionsProgress">
+                <span class="progress-label" id="progressLabel">Step 1 of 5</span>
+                <div class="progress-dots" id="progressDots" aria-hidden="true">
+                    <span class="progress-dot current"></span>
+                    <span class="progress-dot"></span>
+                    <span class="progress-dot"></span>
+                    <span class="progress-dot"></span>
+                    <span class="progress-dot"></span>
+                </div>
+            </div>
             <div class="questions-container">
                 <div class="question-card active" data-question="1">
                     <h2 class="question-title">What is your beautiful name?</h2>
                     <input type="text" class="question-input" id="duaInput" placeholder="Your name...">
-                    <button class="next-button" id="nextButton1">Next</button>
+                    <div class="question-actions">
+                        <button type="button" class="next-button" id="nextButton1">Next</button>
+                    </div>
                 </div>
 
                 <div class="question-card" data-question="2">
                     <h2 class="question-title">😄 Be honest... Eidi kab bhej rahe ho?</h2>
                     <input type="text" class="question-input" id="joyInput" placeholder="Your honest answer...">
-                    <button class="next-button" id="nextButton2">Next</button>
+                    <div class="question-actions">
+                        <button type="button" class="back-button" data-back-to="1">← Back</button>
+                        <button type="button" class="next-button" id="nextButton2">Next</button>
+                    </div>
                 </div>
 
                 <div class="question-card" data-question="3">
                     <h2 class="question-title">Who is the first person you want to wish Eid Mubarak?</h2>
                     <input type="text" class="question-input" id="personInput" placeholder="Their name...">
-                    <button class="next-button" id="nextButton3">Next</button>
+                    <div class="question-actions">
+                        <button type="button" class="back-button" data-back-to="2">← Back</button>
+                        <button type="button" class="next-button" id="nextButton3">Next</button>
+                    </div>
                 </div>
 
                 <div class="question-card" data-question="4">
                     <h2 class="question-title">What's your favorite Eid memory?</h2>
                     <textarea class="question-input" id="memoryInput" placeholder="Share a special moment..." rows="4"></textarea>
-                    <button class="next-button" id="nextButton4">Next</button>
+                    <div class="question-actions">
+                        <button type="button" class="back-button" data-back-to="3">← Back</button>
+                        <button type="button" class="next-button" id="nextButton4">Next</button>
+                    </div>
                 </div>
 
                 <div class="question-card" data-question="5">
                     <h2 class="question-title">If you want to send a special message to Muhammad Rayasat, what would you like to say?</h2>
                     <textarea class="question-input" id="eidiInput" placeholder="Your message..." rows="4"></textarea>
-                    <button class="submit-button" id="submitButton">Submit</button>
+                    <div class="question-actions">
+                        <button type="button" class="back-button" data-back-to="4">← Back</button>
+                        <button type="button" class="submit-button" id="submitButton">Submit</button>
+                    </div>
                 </div>
 
                 <div class="result-card" id="resultCard">
@@ -145,7 +180,7 @@
 
     <!-- Lightbox Modal -->
     <div class="lightbox" id="lightbox">
-        <span class="lightbox-close">&times;</span>
+        <button type="button" class="lightbox-close" aria-label="Close preview">&times;</button>
         <div class="lightbox-content">
             <img src="" alt="Preview" id="lightboxImage">
         </div>
