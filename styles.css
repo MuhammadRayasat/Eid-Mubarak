@@ -57,6 +57,12 @@ body {
     pointer-events: none;
 }
 
+/* Returning visitors: the <head> script adds .no-intro before first
+   paint, so the overlay never flashes on screen. */
+html.no-intro .letter-overlay {
+    display: none;
+}
+
 .letter-particles {
     position: absolute;
     width: 100%;
@@ -752,6 +758,22 @@ textarea.question-input {
     font-size: 0.9rem;
 }
 
+.replay-intro {
+    margin-top: 14px;
+    background: transparent;
+    border: none;
+    color: rgba(245, 245, 220, 0.6);
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.replay-intro:hover {
+    color: var(--yellow);
+}
+
 /* Lightbox */
 .lightbox {
     display: none;
@@ -811,6 +833,342 @@ textarea.question-input {
     z-index: 9999;
 }
 
+/* Eid Quiz */
+.quiz-section {
+    padding: 100px 0;
+    background: linear-gradient(180deg, var(--black) 0%, var(--dark-green) 50%, var(--black) 100%);
+}
+
+.quiz-intro {
+    text-align: center;
+    color: var(--cream);
+    font-size: 1.15rem;
+    margin-bottom: 40px;
+}
+
+.quiz-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.quiz-progress {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.quiz-progress-label {
+    color: var(--cream);
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+}
+
+.quiz-progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    margin-top: 0.6rem;
+    overflow: hidden;
+}
+
+.quiz-progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--gold), var(--yellow));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.quiz-card,
+.quiz-result {
+    background: linear-gradient(135deg, rgba(13, 77, 61, 0.4) 0%, rgba(26, 122, 94, 0.4) 100%);
+    border: 2px solid var(--dark-green);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+}
+
+.quiz-result {
+    border-color: var(--yellow);
+}
+
+.quiz-question {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 1.9rem);
+    color: var(--yellow);
+    margin-bottom: 28px;
+}
+
+.quiz-options {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.quiz-option {
+    width: 100%;
+    text-align: left;
+    background: rgba(0, 0, 0, 0.45);
+    color: var(--white);
+    border: 2px solid var(--dark-green);
+    border-radius: 12px;
+    padding: 15px 20px;
+    min-height: 56px;
+    font-size: 1.05rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.quiz-option:hover:not(:disabled) {
+    border-color: var(--yellow);
+    transform: translateY(-2px);
+}
+
+.quiz-option:disabled {
+    cursor: default;
+    opacity: 0.9;
+}
+
+.quiz-option.correct {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.18);
+}
+
+.quiz-option.wrong {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.18);
+}
+
+.quiz-feedback {
+    min-height: 1.6em;
+    margin-top: 1.25rem;
+    color: var(--cream);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.quiz-feedback:empty {
+    margin-top: 0;
+}
+
+.quiz-next {
+    margin-top: 1rem;
+}
+
+.quiz-result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    color: var(--yellow);
+    margin-bottom: 10px;
+}
+
+.quiz-score {
+    font-size: 1.6rem;
+    color: var(--cream);
+    margin-bottom: 15px;
+}
+
+.quiz-result-message {
+    color: var(--white);
+    margin-bottom: 25px;
+}
+
+.quiz-best {
+    text-align: center;
+    color: var(--gold);
+    margin-top: 1.25rem;
+}
+
+.quiz-best:empty {
+    display: none;
+}
+
+/* Interactive sky: tappable moon, stars and floating lanterns */
+.moon-icon {
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: filter 0.3s ease;
+}
+
+.moon-icon:active,
+.moon-icon.burst {
+    filter: drop-shadow(0 0 22px rgba(255, 215, 0, 0.95));
+}
+
+.moon-hint {
+    color: rgba(245, 245, 220, 0.75);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    animation: pulse 2.5s infinite;
+}
+
+.star {
+    cursor: pointer;
+}
+
+.sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 15;
+    box-shadow: 0 0 8px var(--yellow);
+    animation: sparkle-fly 0.8s ease-out forwards;
+}
+
+@keyframes sparkle-fly {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px))) scale(0);
+        opacity: 0;
+    }
+}
+
+.lanterns {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.lantern {
+    position: absolute;
+    background: transparent;
+    border: none;
+    font-size: clamp(2rem, 7vw, 3rem);
+    line-height: 1;
+    cursor: pointer;
+    pointer-events: auto;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 12px rgba(255, 184, 0, 0.55));
+    animation: lantern-float 7s ease-in-out infinite alternate;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.lantern:nth-child(1) { left: 6%; top: 14%; animation-delay: 0s; }
+.lantern:nth-child(2) { left: 20%; top: 58%; animation-delay: 1.4s; animation-duration: 8s; }
+.lantern:nth-child(3) { right: 18%; top: 22%; animation-delay: 0.8s; }
+.lantern:nth-child(4) { right: 6%; top: 62%; animation-delay: 2s; animation-duration: 9s; }
+
+.lantern:hover {
+    opacity: 1;
+}
+
+.lantern.glow {
+    filter: drop-shadow(0 0 26px rgba(255, 215, 0, 1));
+    opacity: 1;
+}
+
+@keyframes lantern-float {
+    0% { transform: translateY(0) rotate(-3deg); }
+    100% { transform: translateY(-26px) rotate(3deg); }
+}
+
+/* Personalized greeting + share controls */
+.hero-from {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: var(--cream);
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+.hero-share-button {
+    display: block;
+    margin: 1rem auto 0;
+    background: transparent;
+    color: var(--cream);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 28px;
+    min-height: 44px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hero-share-button:hover {
+    border-color: var(--yellow);
+    color: var(--yellow);
+}
+
+.result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.result-action-button {
+    background: transparent;
+    color: var(--cream);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 26px;
+    min-height: 48px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.result-action-button:hover {
+    border-color: var(--yellow);
+    color: var(--yellow);
+    transform: translateY(-2px);
+}
+
+.result-action-button.primary {
+    background: linear-gradient(135deg, var(--dark-green) 0%, var(--light-green) 100%);
+    color: var(--yellow);
+    border-color: var(--yellow);
+    font-weight: 600;
+}
+
+.result-action-button.whatsapp {
+    border-color: #25d366;
+    color: #8be9a8;
+}
+
+.result-action-button.whatsapp:hover {
+    border-color: #25d366;
+    color: #b9f6ca;
+}
+
+/* Toast for copy/share confirmations */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    transform: translate(-50%, 20px);
+    background: var(--dark-green);
+    color: var(--yellow);
+    border: 2px solid var(--yellow);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 1rem;
+    text-align: center;
+    max-width: calc(100vw - 2rem);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10001;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero-title {
@@ -840,6 +1198,7 @@ textarea.question-input {
 
     .media-section,
     .questions-section,
+    .quiz-section,
     .wishes-section {
         padding: 70px 0;
     }
@@ -864,7 +1223,9 @@ textarea.question-input {
     }
 
     .question-card,
-    .result-card {
+    .result-card,
+    .quiz-card,
+    .quiz-result {
         padding: 24px 16px;
     }
 
@@ -900,6 +1261,7 @@ textarea.question-input {
 
     .media-section,
     .questions-section,
+    .quiz-section,
     .wishes-section {
         padding: 60px 0;
     }

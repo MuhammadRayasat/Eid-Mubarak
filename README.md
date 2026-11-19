@@ -4,8 +4,11 @@ A modern, responsive Eid wishing website created by Muhammad Rayasat.
 
 ## Features
 
-- Animated envelope intro with letter reveal and confetti
-- Animated hero section with stars and moon
+- Animated envelope intro with letter reveal and confetti (returning visitors skip it; "Replay intro" in the footer brings it back)
+- Animated hero section with stars and moon — tap the moon, a star, or a floating lantern for sparkle bursts
+- Personalized greeting links (`?name=Ayesha`): the hero greets the visitor by name, question 1 is pre-filled, and visitors can copy a link or share on WhatsApp
+- Downloadable Eid greeting card (1080×1350 image with the visitor's name; native share sheet on mobile)
+- Eid quiz: 5 fun multiple-choice questions with instant feedback, a score screen, and a saved best score
 - Interactive questions flow with progress indicator, Back buttons, and a personalized result message
 - Media gallery with lightbox preview
 - Heartfelt wishes section with animated text

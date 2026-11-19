@@ -19,6 +19,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        // Returning visitors skip the intro envelope. Runs before first
+        // paint so the overlay never flashes on screen.
+        try {
+            if (window.localStorage.getItem('eidVisited') === '1') {
+                document.documentElement.classList.add('no-intro');
+            }
+        } catch (e) { /* private mode: show the intro as normal */ }
+    </script>
 </head>
 <body>
     <!-- Opening Letter Animation -->
@@ -47,11 +56,20 @@
     <!-- Hero Section -->
     <section class="hero" id="hero">
         <div class="stars-container" id="starsContainer"></div>
+        <div class="lanterns" aria-label="Floating lanterns">
+            <button type="button" class="lantern" aria-label="Tap the lantern">🏮</button>
+            <button type="button" class="lantern" aria-label="Tap the lantern">🏮</button>
+            <button type="button" class="lantern" aria-label="Tap the lantern">🏮</button>
+            <button type="button" class="lantern" aria-label="Tap the lantern">🏮</button>
+        </div>
         <div class="hero-content">
-            <div class="moon-icon">🌙</div>
+            <button type="button" class="moon-icon" id="moonButton" aria-label="Tap the moon for a sparkle burst" title="Tap the moon ✨">🌙</button>
+            <p class="moon-hint">Tap the moon ✨</p>
             <h1 class="hero-title">Eid Mubarak</h1>
-            <p class="hero-subtitle">From Muhammad Rayasat</p>
+            <p class="hero-subtitle" id="heroSubtitle">From Muhammad Rayasat</p>
+            <p class="hero-from" id="heroFrom" hidden>From Muhammad Rayasat</p>
             <button type="button" class="cta-button" id="ctaButton">Start Your Eid Experience</button>
+            <button type="button" class="hero-share-button" id="heroShareButton">🔗 Share this greeting</button>
         </div>
     </section>
 
@@ -138,8 +156,40 @@
                         <p class="result-message" id="resultMessage"></p>
                         <p class="result-dua" id="resultDua"></p>
                         <p class="result-humor" id="resultHumor"></p>
+                        <div class="result-actions">
+                            <button type="button" class="result-action-button primary" id="downloadCardButton">🎴 Download your Eid card</button>
+                            <button type="button" class="result-action-button" id="copyLinkButton">🔗 Copy greeting link</button>
+                            <button type="button" class="result-action-button whatsapp" id="whatsappShareButton">💬 Share on WhatsApp</button>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Eid Quiz Section -->
+    <section class="quiz-section" id="quizSection">
+        <div class="container">
+            <h2 class="section-title">How Well Do You Know Eid?</h2>
+            <p class="quiz-intro">Five quick, fun questions — no wrong answers here, just Eid vibes. 🌙</p>
+            <div class="quiz-container" id="quizContainer">
+                <div class="quiz-progress" id="quizProgress">
+                    <span class="quiz-progress-label" id="quizProgressLabel">Question 1 of 5</span>
+                    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill"></div></div>
+                </div>
+                <div class="quiz-card" id="quizCard">
+                    <h3 class="quiz-question" id="quizQuestion"></h3>
+                    <div class="quiz-options" id="quizOptions" role="group" aria-label="Answer options"></div>
+                    <p class="quiz-feedback" id="quizFeedback" aria-live="polite"></p>
+                    <button type="button" class="next-button quiz-next" id="quizNextButton" hidden>Next →</button>
+                </div>
+                <div class="quiz-result" id="quizResult" hidden>
+                    <h3 class="quiz-result-title" id="quizResultTitle"></h3>
+                    <p class="quiz-score" id="quizScore"></p>
+                    <p class="quiz-result-message" id="quizResultMessage"></p>
+                    <button type="button" class="next-button" id="quizRestartButton">Play again ↻</button>
+                </div>
+                <p class="quiz-best" id="quizBest"></p>
             </div>
         </div>
     </section>
@@ -175,6 +225,7 @@
         <div class="container">
             <p class="footer-text">Created with ❤️ by Muhammad Rayasat</p>
             <p class="footer-year">Eid 2026</p>
+            <button type="button" class="replay-intro" id="replayIntroButton">↺ Replay intro</button>
         </div>
     </footer>
 
@@ -193,6 +244,9 @@
     <audio id="backgroundMusic" loop>
         <source src="eid-nasheed.mp3" type="audio/mpeg">
     </audio>
+
+    <!-- Toast for copy/share confirmations -->
+    <p class="toast" id="shareToast" role="status" aria-live="polite"></p>
 
     <script src="script.js"></script>
 </body>
